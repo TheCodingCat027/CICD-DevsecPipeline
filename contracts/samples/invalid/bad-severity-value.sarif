@@ -1,0 +1,33 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "semgrep",
+          "version": "1.99.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "some-rule",
+          "level": "error",
+          "message": {"text": "A finding with bad severity"},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "app.py"},
+                "region": {"startLine": 1}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "CRITICAL",
+            "category": "sast"
+          }
+        }
+      ]
+    }
+  ]
+}
+

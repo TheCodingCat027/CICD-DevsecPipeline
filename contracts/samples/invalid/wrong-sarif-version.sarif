@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "semgrep",
+          "version": "1.99.0"
+        }
+      },
+      "results": []
+    }
+  ]
+}
+

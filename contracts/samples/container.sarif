@@ -1,0 +1,42 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "trivy",
+          "version": "0.57.1",
+          "informationUri": "https://github.com/aquasecurity/trivy"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CVE-2023-23931",
+          "level": "warning",
+          "message": {"text": "Package cryptography 39.0.0 is affected by CVE-2023-23931 in base image layer."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/Dockerfile"},
+                "region": {"startLine": 3}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "cve_id": "CVE-2023-23931",
+            "package": "cryptography",
+            "installed_version": "39.0.0",
+            "fixed_version": "39.0.1",
+            "fix_available": true,
+            "raw_severity": "MEDIUM",
+            "fix": "Update base image to get patched cryptography version"
+          }
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,4 @@
+This is not JSON at all.
+It is plain text masquerading as a SARIF file.
+{ broken json here
+

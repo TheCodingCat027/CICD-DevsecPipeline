@@ -1,0 +1,95 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "hadolint",
+          "version": "2.12.0",
+          "informationUri": "https://github.com/hadolint/hadolint",
+          "rules": [
+            {
+              "id": "DL3002",
+              "name": "LastUserShouldNotBeRoot",
+              "shortDescription": {"text": "Last USER should not be root"},
+              "helpUri": "https://github.com/hadolint/hadolint/wiki/DL3002"
+            },
+            {
+              "id": "DL3007",
+              "name": "LatestTagInsteadOfPinned",
+              "shortDescription": {"text": "Using latest is best avoided. Pin version explicitly"},
+              "helpUri": "https://github.com/hadolint/hadolint/wiki/DL3007"
+            },
+            {
+              "id": "CKV_DOCKER_28",
+              "name": "NoHealthcheck",
+              "shortDescription": {"text": "Ensure that HEALTHCHECK instructions have been added"},
+              "helpUri": "https://docs.bridgecrew.io/docs/ensure-that-healthcheck-instructions-have-been-added-to-container-images"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "DL3002",
+          "level": "warning",
+          "message": {"text": "Last USER should not be root. Add a USER instruction to run as a non-root user."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/Dockerfile"},
+                "region": {"startLine": 1}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "iac",
+            "raw_severity": "warning",
+            "fix": "Add 'RUN useradd appuser && USER appuser' before the CMD instruction"
+          }
+        },
+        {
+          "ruleId": "DL3007",
+          "level": "warning",
+          "message": {"text": "Using latest is best avoided. Specify an explicit version tag for the base image."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/Dockerfile"},
+                "region": {"startLine": 3}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "iac",
+            "raw_severity": "warning",
+            "fix": "Replace 'python:3.11-slim' with a pinned version like 'python:3.11.11-slim'"
+          }
+        },
+        {
+          "ruleId": "CKV_DOCKER_28",
+          "level": "warning",
+          "message": {"text": "Ensure that HEALTHCHECK instructions have been added to the container image."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/Dockerfile"},
+                "region": {"startLine": 1}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "iac",
+            "raw_severity": "warning",
+            "fix": "Add a HEALTHCHECK instruction to the Dockerfile"
+          }
+        }
+      ]
+    }
+  ]
+}
+

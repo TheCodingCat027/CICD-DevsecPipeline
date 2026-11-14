@@ -1,0 +1,32 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "semgrep",
+          "version": "1.99.0"
+        }
+      },
+      "results": [
+        {
+          "level": "error",
+          "message": {"text": "A finding without a ruleId"},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "app.py"},
+                "region": {"startLine": 1}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "sast"
+          }
+        }
+      ]
+    }
+  ]
+}
+

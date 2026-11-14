@@ -1,0 +1,76 @@
+name: "Run Security Stage"
+description: "Thin composite action that runs one security stage, validates its output, and uploads the SARIF artifact."
+
+inputs:
+  stage:
+    description: "Stage name (e.g. secrets, sast, sca)"
+    required: true
+  target:
+    description: "Path to the directory to scan"
+    required: true
+    default: "demo-app/vulnerable"
+  needs_image:
+    description: "Whether this stage needs a pre-built Docker image (true/false)"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download image artifact (if needed)
+      if: inputs.needs_image == 'true'
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+        path: /tmp/docker-image
+
+    - name: Load Docker image (if needed)
+      if: inputs.needs_image == 'true'
+      shell: bash
+      run: |
+        IMAGE_TAR=$(ls /tmp/docker-image/*.tar 2>/dev/null | head -1)
+        if [ -n "$IMAGE_TAR" ]; then
+          docker load -i "$IMAGE_TAR"
+          IMAGE_REF=$(docker load -i "$IMAGE_TAR" 2>&1 | grep "Loaded image:" | awk '{print $NF}' | head -1)
+          echo "IMAGE_REF=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "Loaded image: $IMAGE_REF"
+        else
+          echo "No image tar found; stage may fail if IMAGE_REF is required"
+        fi
+
+    - name: Create reports directory
+      shell: bash
+      run: mkdir -p reports/${{ inputs.stage }}
+
+    - name: Record stage start time
+      shell: bash
+      run: echo "STAGE_START=$(date -u +%s)" >> "$GITHUB_ENV"
+
+    - name: Run stage
+      shell: bash
+      run: bash stages/${{ inputs.stage }}/run.sh "${{ inputs.target }}" "reports/${{ inputs.stage }}"
+
+    - name: Validate stage output
+      shell: bash
+      run: |
+        python contracts/validate.py \
+          "reports/${{ inputs.stage }}/${{ inputs.stage }}.sarif" \
+          --stage "${{ inputs.stage }}"
+
+    - name: Record stage end time and write summary
+      shell: bash
+      run: |
+        STAGE_END=$(date -u +%s)
+        DURATION=$((STAGE_END - STAGE_START))
+        echo "### Stage: ${{ inputs.stage }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Duration: ${DURATION}s" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Output: \`reports/${{ inputs.stage }}/${{ inputs.stage }}.sarif\`" >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Upload stage reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: reports-${{ inputs.stage }}
+        path: reports/${{ inputs.stage }}/
+        if-no-files-found: error
+        retention-days: 7
+

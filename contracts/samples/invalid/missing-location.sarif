@@ -1,0 +1,25 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "semgrep",
+          "version": "1.99.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "some-rule",
+          "level": "error",
+          "message": {"text": "A finding with no location"},
+          "properties": {
+            "severity": "High",
+            "category": "sast"
+          }
+        }
+      ]
+    }
+  ]
+}
+

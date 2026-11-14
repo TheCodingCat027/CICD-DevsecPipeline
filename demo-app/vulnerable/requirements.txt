@@ -1,0 +1,13 @@
+# WARNING: These dependencies are intentionally outdated for SCA testing (V3).
+# DO NOT use in production. See seeded-vulnerabilities.md for CVE details.
+#
+# V3a: Flask 1.0.2 - depends on Jinja2 < 2.10.1 (CVE-2019-10906, unverified)
+# V3b: Jinja2 2.10 - CVE-2019-10906 Server Side Template Injection (unverified)
+# V3c: PyYAML 5.1 - CVE-2019-20477 arbitrary code execution (unverified)
+Flask==1.0.2
+Jinja2==2.10
+PyYAML==5.1
+Werkzeug==0.15.4
+itsdangerous==1.1.0
+click==7.0
+MarkupSafe==1.1.1

@@ -1,0 +1,320 @@
+# DevSecOps CI/CD Security Pipeline
+# Phase 1: Foundation — stub stages, real contracts, real workflow plumbing
+# P1 owns this file. No other phase modifies pipeline.yml.
+# See docs/p1-architecture.md for the design and docs/contributing.md for how to extend.
+
+name: Security Pipeline
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Target directory to scan"
+        required: false
+        default: "demo-app/vulnerable"
+  workflow_call:
+    inputs:
+      target:
+        description: "Target directory to scan"
+        required: false
+        type: string
+        default: "demo-app/vulnerable"
+
+# Cancel superseded runs on the same ref to save CI resources
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Minimal permissions at workflow level
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+
+  # ── Job 1: Validate contracts and run all tests ────────────────────────────
+  # This is a required check. All subsequent jobs depend on it.
+  # Architecture ref: docs/p1-architecture.md § Contracts
+  contracts-and-tests:
+    name: "Contracts & Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4   # v4.2.2
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5   # v5.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: contracts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r contracts/requirements.txt
+
+      - name: Validate all SARIF samples
+        run: python contracts/validate.py contracts/samples
+
+      - name: Validate baseline security policy
+        run: python contracts/validate.py --policy security-policy.yaml
+
+      - name: Run pytest (contracts + demo-app)
+        run: pytest contracts/tests/ demo-app/ -v --tb=short
+
+      - name: Confirm invalid samples are rejected
+        run: |
+          echo "Verifying that each file in contracts/samples/invalid/ is rejected..."
+          for f in contracts/samples/invalid/*.sarif; do
+            if python contracts/validate.py "$f"; then
+              echo "FAIL: $f should have been rejected but passed" && exit 1
+            fi
+            echo "OK (correctly rejected): $f"
+          done
+
+
+  # ── Job 2: Prepare stage matrix ───────────────────────────────────────────
+  # Reads stages/stages.json and outputs a matrix of enabled stages.
+  # Architecture ref: docs/p1-architecture.md § Stage Registry
+  prepare:
+    name: "Prepare Stage Matrix"
+    runs-on: ubuntu-latest
+    needs: contracts-and-tests
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build stage matrix from stages.json
+        id: matrix
+        run: |
+          MATRIX=$(python3 -c "
+          import json
+          with open('stages/stages.json') as f:
+              data = json.load(f)
+          enabled = [s for s in data['stages'] if s.get('enabled', False)]
+          print(json.dumps({'include': enabled}))
+          ")
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "Stage matrix: $MATRIX"
+
+
+  # ── Job 3: Build container image ─────────────────────────────────────────
+  # Builds the Docker image for the scan target and exports it as an artifact.
+  # P3 stages consume this via IMAGE_REF. In Phase 1 the stub stages ignore it.
+  # Architecture ref: docs/p1-architecture.md § Image Build
+  build-image:
+    name: "Build Container Image"
+    runs-on: ubuntu-latest
+    needs: contracts-and-tests
+    outputs:
+      image_ref: ${{ steps.build.outputs.image_ref }}
+    env:
+      TARGET: ${{ inputs.target || 'demo-app/vulnerable' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for Dockerfile
+        id: check
+        run: |
+          if [ -f "$TARGET/Dockerfile" ]; then
+            echo "has_dockerfile=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_dockerfile=false" >> "$GITHUB_OUTPUT"
+            echo "No Dockerfile found in $TARGET — skipping image build"
+          fi
+
+      - name: Build Docker image
+        id: build
+        if: steps.check.outputs.has_dockerfile == 'true'
+        run: |
+          IMAGE_TAG="devsecops-target:${{ github.sha }}"
+          docker build -t "$IMAGE_TAG" "$TARGET"
+          echo "image_ref=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          echo "Built image: $IMAGE_TAG"
+
+      - name: Export image to tar
+        if: steps.check.outputs.has_dockerfile == 'true'
+        run: |
+          mkdir -p /tmp/docker-image
+          docker save "devsecops-target:${{ github.sha }}" -o /tmp/docker-image/image.tar
+
+      - name: Upload image artifact
+        if: steps.check.outputs.has_dockerfile == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp/docker-image/image.tar
+          retention-days: 1
+
+      - name: Set placeholder image ref (no Dockerfile)
+        if: steps.check.outputs.has_dockerfile == 'false'
+        run: echo "No image built (no Dockerfile)"
+
+
+  # ── Job 4: Security stages (parallel matrix) ─────────────────────────────
+  # Runs all enabled stages in parallel using the composite action.
+  # fail-fast: false ensures one stage failure does not cancel others.
+  # Architecture ref: docs/p1-architecture.md § Stage Matrix
+  stage:
+    name: "Stage: ${{ matrix.name }}"
+    runs-on: ubuntu-latest
+    needs: [prepare, build-image]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: contracts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r contracts/requirements.txt
+
+      - name: Run stage via composite action
+        uses: ./.github/actions/run-stage
+        with:
+          stage: ${{ matrix.name }}
+          target: ${{ inputs.target || 'demo-app/vulnerable' }}
+          needs_image: ${{ matrix.needs_image && 'true' || 'false' }}
+
+
+  # ── Job 5: Policy gate ────────────────────────────────────────────────────
+  # Downloads all stage reports, runs the gate, and writes gate-result.json.
+  # A non-zero gate exit fails this job and prevents the deploy job from running.
+  # Architecture ref: docs/p1-architecture.md § Gate
+  gate:
+    name: "Policy Gate"
+    runs-on: ubuntu-latest
+    needs: stage
+    permissions:
+      contents: read
+    env:
+      TARGET: ${{ inputs.target || 'demo-app/vulnerable' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: contracts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r contracts/requirements.txt
+
+      - name: Download all stage reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: reports-*
+          path: reports
+          merge-multiple: false
+
+      - name: Record gate start time
+        run: echo "GATE_START=$(date -u +%s)" >> "$GITHUB_ENV"
+
+      - name: Run policy gate
+        run: |
+          python gate/run_gate.py \
+            --reports reports \
+            --policy security-policy.yaml \
+            --out gate-out
+
+      - name: Record gate end time
+        if: always()
+        run: |
+          GATE_END=$(date -u +%s)
+          GATE_DURATION=$((GATE_END - GATE_START))
+          echo "GATE_DURATION=${GATE_DURATION}" >> "$GITHUB_ENV"
+
+      - name: Write gate summary
+        if: always()
+        run: |
+          if [ -f gate-out/gate-result.json ]; then
+            python3 - << 'PYEOF'
+          import json, os
+          with open("gate-out/gate-result.json") as f:
+              r = json.load(f)
+          c = r.get("counts", {})
+          d = r.get("decision", "unknown")
+          duration = os.environ.get("GATE_DURATION", "?")
+          summary = f"""## Gate Result: {d.upper()}
+
+          **Duration:** {duration}s  
+          **Mode:** {r.get("mode", "unknown")}  
+          **Generated:** {r.get("generated_at", "unknown")}
+
+          ### Finding Counts
+          | Severity | Count |
+          |----------|-------|
+          | Critical | {c.get("Critical", 0)} |
+          | High     | {c.get("High", 0)} |
+          | Medium   | {c.get("Medium", 0)} |
+          | Low      | {c.get("Low", 0)} |
+          """
+          if r.get("violations"):
+              summary += "\n### Violations\n"
+              for v in r["violations"]:
+                  summary += f"- {v}\n"
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write(summary)
+          PYEOF
+          else
+            echo "No gate-result.json found" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload gate output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-output
+          path: gate-out/
+          retention-days: 7
+
+
+  # ── Job 6: Deploy (mock) ──────────────────────────────────────────────────
+  # Only runs on push to main after the gate passes.
+  # NEVER deploys the vulnerable target to a real environment.
+  # Architecture ref: docs/p1-architecture.md § Deploy
+  #
+  # WARNING: The vulnerable demo-app MUST NEVER be deployed to a real environment.
+  # This job is a mock that only echoes a message.
+  deploy:
+    name: "Deploy (Mock)"
+    runs-on: ubuntu-latest
+    needs: gate
+    # Only deploy on push to main (not PRs, not other branches)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: staging
+    steps:
+      - name: Mock deploy
+        env:
+          IMAGE_REF: ${{ needs.build-image.outputs.image_ref || 'no-image' }}
+        run: |
+          echo "======================================"
+          echo "  MOCK DEPLOY"
+          echo "  Image: $IMAGE_REF"
+          echo "  Ref: ${{ github.sha }}"
+          echo "  Environment: staging"
+          echo "======================================"
+          echo "This is a mock deployment. No real deployment occurs."
+          echo "Real deployment logic is added in Phase 5."
+

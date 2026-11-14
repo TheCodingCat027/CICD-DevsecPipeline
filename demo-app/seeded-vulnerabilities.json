@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "description": "Ground truth for Phase 5 detection-rate evaluation",
+  "generated_at": "2026-11-14T00:00:00Z",
+  "vulnerabilities": [
+    {
+      "id": "V1",
+      "file": "demo-app/vulnerable/config.py",
+      "line": 10,
+      "class": "Secret",
+      "description": "Hardcoded fake AWS access key ID and secret access key",
+      "expected_tool": "gitleaks",
+      "expected_rule_id": "aws-access-token",
+      "cve_ids": [],
+      "fixed_in": "demo-app/fixed/config.py (read from env vars)"
+    },
+    {
+      "id": "V2",
+      "file": "demo-app/vulnerable/app.py",
+      "line": 51,
+      "class": "SAST",
+      "description": "SQL injection via string concatenation in /users endpoint",
+      "expected_tool": "semgrep",
+      "expected_rule_id": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+      "cve_ids": [],
+      "cwe": "CWE-89",
+      "fixed_in": "demo-app/fixed/app.py (parameterized query)"
+    },
+    {
+      "id": "V3a",
+      "file": "demo-app/vulnerable/requirements.txt",
+      "line": 7,
+      "class": "SCA",
+      "description": "Flask 1.0.2 depends on vulnerable Jinja2",
+      "expected_tool": "trivy",
+      "expected_rule_id": "CVE-2019-10906",
+      "cve_ids": ["CVE-2019-10906"],
+      "cve_verified": false,
+      "fixed_in": "demo-app/fixed/requirements.txt (Flask==3.1.0)"
+    },
+    {
+      "id": "V3b",
+      "file": "demo-app/vulnerable/requirements.txt",
+      "line": 8,
+      "class": "SCA",
+      "description": "Jinja2 2.10 Server Side Template Injection",
+      "expected_tool": "trivy",
+      "expected_rule_id": "CVE-2019-10906",
+      "cve_ids": ["CVE-2019-10906"],
+      "cve_verified": false,
+      "fixed_in": "demo-app/fixed/requirements.txt (Jinja2==3.1.5)"
+    },
+    {
+      "id": "V3c",
+      "file": "demo-app/vulnerable/requirements.txt",
+      "line": 9,
+      "class": "SCA",
+      "description": "PyYAML 5.1 arbitrary code execution via yaml.load",
+      "expected_tool": "trivy",
+      "expected_rule_id": "CVE-2019-20477",
+      "cve_ids": ["CVE-2019-20477"],
+      "cve_verified": false,
+      "fixed_in": "demo-app/fixed/requirements.txt (PyYAML==6.0.2)"
+    },
+    {
+      "id": "V4",
+      "file": "demo-app/vulnerable/Dockerfile",
+      "line": 7,
+      "class": "IaC",
+      "description": "Container runs as root - no USER instruction",
+      "expected_tool": "hadolint",
+      "expected_rule_id": "DL3002",
+      "cve_ids": [],
+      "fixed_in": "demo-app/fixed/Dockerfile (USER appuser)"
+    },
+    {
+      "id": "V5",
+      "file": "demo-app/vulnerable/Dockerfile",
+      "line": 7,
+      "class": "IaC",
+      "description": "Unpinned base image tag (python:3.11-slim without digest)",
+      "expected_tool": "hadolint",
+      "expected_rule_id": "DL3007",
+      "cve_ids": [],
+      "fixed_in": "demo-app/fixed/Dockerfile (python:3.11.11-slim)"
+    },
+    {
+      "id": "V6",
+      "file": "demo-app/vulnerable/app.py",
+      "line": 69,
+      "class": "SAST",
+      "description": "Weak password hashing using MD5",
+      "expected_tool": "semgrep",
+      "expected_rule_id": "python.lang.security.audit.md5-used-as-password.md5-used-as-password",
+      "cve_ids": [],
+      "cwe": "CWE-916",
+      "fixed_in": "demo-app/fixed/app.py (hashlib.scrypt)"
+    },
+    {
+      "id": "V7",
+      "file": "demo-app/vulnerable/app.py",
+      "line": 114,
+      "class": "SAST",
+      "description": "Flask debug=True enables interactive debugger in production",
+      "expected_tool": "semgrep",
+      "expected_rule_id": "python.flask.security.audit.debug-enabled.debug-enabled",
+      "cve_ids": [],
+      "fixed_in": "demo-app/fixed/app.py (debug=DEBUG from env)"
+    },
+    {
+      "id": "V8",
+      "file": "demo-app/vulnerable/Dockerfile",
+      "line": 7,
+      "class": "IaC",
+      "description": "No HEALTHCHECK instruction in Dockerfile",
+      "expected_tool": "checkov",
+      "expected_rule_id": "CKV_DOCKER_28",
+      "cve_ids": [],
+      "fixed_in": "demo-app/fixed/Dockerfile (HEALTHCHECK added)"
+    }
+  ]
+}
