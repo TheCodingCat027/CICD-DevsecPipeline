@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://devsecops-pipeline/contracts/finding.schema.json",
+  "title": "NormalizedFinding",
+  "description": "Normalized security finding produced by any pipeline stage and consumed by the gate.",
+  "type": "object",
+  "required": ["tool","stage","category","rule_id","severity","file","line","description","fix"],
+  "additionalProperties": false,
+  "properties": {
+    "tool": {
+      "type": "string",
+      "description": "Name of the scanner that produced this finding, e.g. gitleaks, semgrep, trivy, hadolint, checkov, zap"
+    },
+    "stage": {
+      "type": "string",
+      "enum": ["secrets","sast","sca","iac","container","sbom","dast"],
+      "description": "Pipeline stage that produced this finding"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["secret","sast","sca","iac","container","dast"],
+      "description": "Finding category for policy evaluation"
+    },
+    "rule_id": {
+      "type": "string",
+      "description": "Tool-specific rule or check identifier"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["Critical","High","Medium","Low"],
+      "description": "Normalized severity (exactly these four values, this casing)"
+    },
+    "file": {
+      "type": "string",
+      "description": "Repo-relative path to the affected file"
+    },
+    "line": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Line number (0 means file-level finding)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the finding"
+    },
+    "fix": {
+      "oneOf": [{"type":"string"},{"type":"null"}],
+      "description": "Human-readable remediation advice, or null if unavailable"
+    },
+    "id": {
+      "type": "string",
+      "description": "Stable fingerprint: sha256 of tool|rule_id|file|line (hex)"
+    },
+    "cve_id": {
+      "type": "string",
+      "description": "CVE identifier if applicable, e.g. CVE-2021-23337"
+    },
+    "cwe": {
+      "type": "string",
+      "description": "CWE identifier if applicable, e.g. CWE-89"
+    },
+    "package": {
+      "type": "string",
+      "description": "Affected package name (SCA findings)"
+    },
+    "installed_version": {
+      "type": "string",
+      "description": "Installed version of the affected package"
+    },
+    "fixed_version": {
+      "type": "string",
+      "description": "Version in which the vulnerability is fixed"
+    },
+    "fix_available": {
+      "type": "boolean",
+      "description": "Whether a fix is available for this finding"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high","medium","low"],
+      "description": "Scanner's confidence in this finding"
+    },
+    "help_uri": {
+      "type": "string",
+      "description": "URL with more information about this finding"
+    },
+    "raw_severity": {
+      "type": "string",
+      "description": "Original severity label from the tool, before normalization"
+    },
+    "waived": {
+      "type": "boolean",
+      "description": "Whether this finding has been waived by the gate (set by gate only)"
+    },
+    "waiver_id": {
+      "type": "string",
+      "description": "ID of the waiver that covers this finding"
+    }
+  }
+}

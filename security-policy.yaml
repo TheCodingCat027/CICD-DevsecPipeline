@@ -1,0 +1,22 @@
+# DevSecOps Pipeline - Baseline Security Policy
+# P4 owns this file from Phase 4 onwards. See CODEOWNERS.
+# Validate with: python contracts/validate.py --policy security-policy.yaml
+
+version: 1
+mode: enforce
+
+secrets:
+  max_allowed: 0
+
+vulnerabilities:
+  critical: 0
+  high: 3
+  medium: null  # unlimited
+  low: null     # unlimited
+
+container:
+  must_run_as_non_root: true
+  banned_base_tags:
+    - "latest"
+
+waivers: []

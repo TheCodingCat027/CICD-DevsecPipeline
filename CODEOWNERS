@@ -1,0 +1,34 @@
+# DevSecOps Pipeline CODEOWNERS
+# Replace @p1-handle, @p2-handle, @p3-handle, @p4-handle with real GitHub usernames
+
+# Contracts require ALL FOUR approvals (see docs/branch-protection.md)
+/contracts/                    @p1-handle @p2-handle @p3-handle @p4-handle
+/security-policy.yaml          @p4-handle
+/gate/                         @p4-handle
+/eval/p4-policy/               @p4-handle
+/docs/p4-*                     @p4-handle
+
+# P2 owns secrets, SAST, SCA stages
+/stages/secrets/               @p2-handle
+/stages/sast/                  @p2-handle
+/stages/sca/                   @p2-handle
+/eval/p2-code/                 @p2-handle
+/docs/p2-*                     @p2-handle
+
+# P3 owns IaC, container, SBOM, DAST stages + fixed Dockerfile
+/stages/iac/                   @p3-handle
+/stages/container/             @p3-handle
+/stages/sbom/                  @p3-handle
+/stages/dast/                  @p3-handle
+/eval/p3-container/            @p3-handle
+/docs/p3-*                     @p3-handle
+/demo-app/fixed/Dockerfile     @p3-handle
+
+# P1 owns everything else
+/demo-app/                     @p1-handle
+/.github/                      @p1-handle
+/scripts/                      @p1-handle
+/Makefile                      @p1-handle
+/eval/p1-performance/          @p1-handle
+/docs/p1-*                     @p1-handle
+/README.md                     @p1-handle

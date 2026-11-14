@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "stages": [
+    {"name": "secrets",   "owner": "P2", "enabled": true,  "needs_image": false},
+    {"name": "sast",      "owner": "P2", "enabled": true,  "needs_image": false},
+    {"name": "sca",       "owner": "P2", "enabled": true,  "needs_image": false},
+    {"name": "iac",       "owner": "P3", "enabled": true,  "needs_image": false},
+    {"name": "container", "owner": "P3", "enabled": true,  "needs_image": true},
+    {"name": "sbom",      "owner": "P3", "enabled": true,  "needs_image": true},
+    {"name": "dast",      "owner": "P3", "enabled": false, "needs_image": true}
+  ]
+}
