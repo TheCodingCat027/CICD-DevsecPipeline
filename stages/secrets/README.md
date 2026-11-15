@@ -1,55 +1,90 @@
 # Stage: `secrets`
 
 **Owner:** P2  
-**Phase:** Phase 2 (stub in Phase 1; real implementation in Phase 2)
+**Phase:** Phase 2  
+**Tool:** Gitleaks v8.21.2  
 
-## Purpose
+---
 
-Detect hardcoded secrets and credentials in source code
+## 1. Purpose
 
-## Real Tool
+The `secrets` stage performs static analysis across the repository to detect hardcoded secrets, API tokens, encryption keys, and credentials before code is deployed. It executes both a working-tree scan on the designated scan target and a git history scan across all commits when executed inside a git repository.
 
-| Property | Value |
-|----------|-------|
-| Tool | Gitleaks |
-| Pinned version (placeholder) | `8.21.2` — P2 must confirm and pin in their implementation |
-| Install | See official Gitleaks installation docs |
+Output conforms to the **SARIF 2.1.0 profile** (`contracts/sarif-profile.md`), ensuring full compatibility with the pipeline gate (`gate/run_gate.py`).
 
-## Interface
+---
 
-This stage implements the **universal stage interface**. See [contracts/stage-interface.md](../../contracts/stage-interface.md).
+## 2. Quick Start
 
-**Invocation:**
+### 2.1 Installation
+Install Gitleaks v8.21.2 into the user cache directory:
 ```bash
-bash stages/secrets/run.sh <target_path> <output_dir>
+bash stages/secrets/install.sh
 ```
 
-**Output:**
-- `<output_dir>/secrets.sarif` — always written, even with zero findings
-- Exit 0 on success, exit 1 on scanner crash, exit 2 on argument error
+### 2.2 Running the Stage
+Execute the stage following the universal stage interface (`run.sh <target_path> <output_dir>`):
+```bash
+bash stages/secrets/run.sh demo-app/vulnerable /tmp/secrets-out
+```
+Output SARIF will be generated at `/tmp/secrets-out/secrets.sarif`.
 
-## Current Stub Status
-
-> ⚠️ This is a **Phase 1 stub**. It copies `contracts/samples/secrets.sarif` to the output
-> directory and prints a reminder to stderr. No real scanning is performed.
-
-## How to Replace This Stub (Phase 2)
-
-1. Install `Gitleaks` at a pinned version and update this README with the exact version.
-2. Edit **only** `stages/secrets/run.sh` — replace the stub copy with real scanner invocation
-   that writes `<output_dir>/secrets.sarif`.
-3. Run `stages/secrets/tests/run_test.sh` to verify the output is valid SARIF.
-4. Run `python contracts/validate.py <output_dir>/secrets.sarif --stage secrets` to confirm
-   format compliance.
-5. **Do NOT** touch `pipeline.yml`, `stages/stages.json`, or `contracts/` —
-   only your stage folder changes.
-
-## Running Tests
-
+### 2.3 Running the Test Suite
+Run the test suite verifying detection, schema validation, redaction, and error handling:
 ```bash
 bash stages/secrets/tests/run_test.sh
 ```
 
-## Ownership
+---
 
-All files inside `stages/secrets/` are owned by **P2** (see `CODEOWNERS`).
+## 3. Configuration (`gitleaks.toml`)
+
+The stage extends Gitleaks' built-in rule catalog using `stages/secrets/gitleaks.toml`.
+
+### 3.1 Custom Rules
+- **`flask-secret-key`**: Targets hardcoded Flask session secrets (`SECRET_KEY = "..."`) in source code. Default Gitleaks rules often miss generic session keys in web framework config files.
+- **`hardcoded-password`**: Identifies variable assignments matching common password variables (`password`, `passwd`, `pwd` assigned a literal string of 4+ characters).
+
+### 3.2 Allowlist Rationale
+Path allowlists prevent false positives from interfering with CI:
+- **`.env.example`**: Example template configuration intended for public documentation; contains dummy place-holder tokens.
+- **`tests/fixtures/`**: Dedicated test fixture directories containing non-operational synthetic tokens for unit/integration tests.
+- **`tests/run_test.sh`**: The stage integration test script which constructs synthetic test strings dynamically.
+- **`seeded-vulnerabilities`**: Benchmark files and ground-truth metadata used for pipeline evaluation.
+
+---
+
+## 4. Severity Mapping
+
+Per `contracts/severity-map.md`, Gitleaks detects generic secrets without inherent severity distinction. The stage post-processes detections via `to_sarif.py` into canonical severity values:
+
+| Gitleaks Finding / Rule ID | Canonical Severity | SARIF Level | Rationale |
+|----------------------------|--------------------|-------------|-----------|
+| Cloud provider keys (`aws-access-token`, `aws-secret-access-key`, `gcp-service-account`, `gcp-service-account-credentials`, `azure-client-secret`, `azure-service-principal`, `github-pat`, `github-fine-grained-pat`, `github-oauth`) | `Critical` | `error` | Direct infrastructure/cloud account compromise risk |
+| All other detected secrets & tokens | `High` | `error` | High risk of credential exposure and lateral movement |
+
+The original scanner severity label is preserved in SARIF `properties.raw_severity` (`"HIGH"`).
+
+---
+
+## 5. Environment Variables & Caching
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `STAGE_TIMEOUT` | `600` | Scanner timeout in seconds per detection pass |
+| `GITLEAKS_SKIP_VERIFY` | `0` | If set to `1`, forces re-download even if cached |
+| `PYTHON` | `python3` | Python binary used for conversion and validation |
+
+### Cache Path
+The Gitleaks binary is cached at:
+```
+${XDG_CACHE_HOME:-$HOME/.cache}/devsecops/gitleaks-8.21.2/gitleaks
+```
+
+---
+
+## 6. Known Limitations
+
+- **Git History Scope**: The history scan operates on the whole repository (`--source $REPO_ROOT`), even if `<target_path>` points to a subdirectory.
+- **Redaction Context**: Secret values are fully redacted (`[REDACTED]`) from SARIF messages, but line numbers and file paths are preserved for developer remediation.
+- **Test Directory Allowlist**: Files under `tests/fixtures/` are allowed by default; actual secrets mistakenly committed to fixture paths will not be flagged.
