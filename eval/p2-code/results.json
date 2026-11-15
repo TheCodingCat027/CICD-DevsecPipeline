@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "phase": 2,
+  "generated_at": "2026-11-15T00:00:00Z",
+  "note": "Numbers marked 'not_run' require tool installation and network access to populate. Update after running eval/p2-code/run_eval.sh.",
+  "tool_versions": {
+    "gitleaks": "8.21.2",
+    "semgrep": "1.100.0",
+    "trivy": "0.58.1"
+  },
+  "seeded_flaws_in_scope": ["V1", "V2", "V3a", "V3b", "V3c", "V6", "V7"],
+  "detection": {
+    "secrets": {
+      "tool": "gitleaks",
+      "target_flaws": ["V1"],
+      "detected": "not_run",
+      "false_negatives": [],
+      "detection_rate": "not_run",
+      "finding_count_vulnerable": "not_run",
+      "finding_count_fixed": "not_run",
+      "runtime_cold_s": "not_run",
+      "runtime_warm_s": "not_run"
+    },
+    "sast": {
+      "tool": "semgrep",
+      "target_flaws": ["V2", "V6", "V7"],
+      "detected": "not_run",
+      "false_negatives": [],
+      "detection_rate": "not_run",
+      "finding_count_vulnerable": "not_run",
+      "finding_count_fixed": "not_run",
+      "runtime_cold_s": "not_run",
+      "runtime_warm_s": "not_run",
+      "tuning_comparison": {
+        "registry_only_detection_rate": "not_run",
+        "custom_only_detection_rate": "not_run",
+        "both_detection_rate": "not_run"
+      }
+    },
+    "sca": {
+      "tool": "trivy",
+      "target_flaws": ["V3a", "V3b", "V3c"],
+      "detected": "not_run",
+      "cve_mismatch_note": "seeded CVE IDs marked cve_verified:false; actual Trivy output may differ",
+      "detection_rate": "not_run",
+      "finding_count_vulnerable": "not_run",
+      "finding_count_fixed": "not_run",
+      "runtime_cold_s": "not_run",
+      "runtime_warm_s": "not_run"
+    }
+  },
+  "overall_detection_rate": "not_run",
+  "false_positives_on_fixed": {
+    "secrets": "not_run",
+    "sast": "not_run",
+    "sca": "not_run (expected: some SCA findings on fixed app as it still uses versioned packages)"
+  }
+}
