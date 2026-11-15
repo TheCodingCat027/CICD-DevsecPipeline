@@ -13,6 +13,7 @@ from typing import Any
 
 CLOUD_PROVIDER_RULES = {
     "aws-access-token",
+    "aws-access-key",
     "aws-secret-access-key",
     "gcp-service-account",
     "gcp-service-account-credentials",
