@@ -1,0 +1,31 @@
+rules:
+  - id: p2-sql-injection-string-concat
+    message: "SQL injection risk: user input concatenated into SQL query. Use parameterized queries (cursor.execute(query, params))."
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-89"
+      owasp: "A03:2021"
+      confidence: high
+      remediation: "Replace string concatenation with parameterized queries: cursor.execute(query, (param,)) where param is a tuple."
+    pattern-either:
+      - pattern: $CURSOR.execute($QUERY + ...)
+      - pattern: $CURSOR.execute($QUERY % ...)
+      - pattern: $CURSOR.execute(f"...", ...)
+      - pattern: $CURSOR.execute("..." % (...))
+      - pattern: |
+          $QUERY = "..." + ...
+          ...
+          $CURSOR.execute($QUERY)
+      - pattern: |
+          $QUERY = "..." + ...
+          ...
+          $CURSOR.execute($QUERY, ...)
+      - pattern: |
+          $QUERY = f"..."
+          ...
+          $CURSOR.execute($QUERY)
+      - pattern: |
+          $QUERY = f"..."
+          ...
+          $CURSOR.execute($QUERY, ...)

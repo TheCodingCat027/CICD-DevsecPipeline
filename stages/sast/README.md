@@ -1,55 +1,94 @@
 # Stage: `sast`
 
 **Owner:** P2  
-**Phase:** Phase 2 (stub in Phase 1; real implementation in Phase 2)
+**Phase:** Phase 2 (Implemented)  
 
 ## Purpose
 
-Static application security testing for code vulnerabilities
+The `sast` stage provides Static Application Security Testing (SAST) for source code across the repository. It analyzes application code for security anti-patterns, injection vulnerabilities, insecure cryptographic usage, and dangerous configuration parameters.
 
-## Real Tool
+## Scanner & Pinned Version
 
-| Property | Value |
-|----------|-------|
-| Tool | Semgrep |
-| Pinned version (placeholder) | `1.99.0` — P2 must confirm and pin in their implementation |
-| Install | See official Semgrep installation docs |
+- **Tool:** [Semgrep](https://semgrep.dev/)
+- **Pinned Version:** `1.100.0`
+- **Installation:** Managed automatically via `install.sh` into a dedicated virtual environment:
+  `${XDG_CACHE_HOME:-$HOME/.cache}/devsecops/semgrep-1.100.0/venv`
 
-## Interface
+## Quick Start
 
-This stage implements the **universal stage interface**. See [contracts/stage-interface.md](../../contracts/stage-interface.md).
-
-**Invocation:**
+### 1. Install Semgrep
 ```bash
-bash stages/sast/run.sh <target_path> <output_dir>
+bash stages/sast/install.sh
 ```
 
-**Output:**
-- `<output_dir>/sast.sarif` — always written, even with zero findings
-- Exit 0 on success, exit 1 on scanner crash, exit 2 on argument error
+### 2. Run Scan
+```bash
+bash stages/sast/run.sh <target_path> <output_dir>
+# Example:
+bash stages/sast/run.sh demo-app/vulnerable/ reports/
+```
 
-## Current Stub Status
-
-> ⚠️ This is a **Phase 1 stub**. It copies `contracts/samples/sast.sarif` to the output
-> directory and prints a reminder to stderr. No real scanning is performed.
-
-## How to Replace This Stub (Phase 2)
-
-1. Install `Semgrep` at a pinned version and update this README with the exact version.
-2. Edit **only** `stages/sast/run.sh` — replace the stub copy with real scanner invocation
-   that writes `<output_dir>/sast.sarif`.
-3. Run `stages/sast/tests/run_test.sh` to verify the output is valid SARIF.
-4. Run `python contracts/validate.py <output_dir>/sast.sarif --stage sast` to confirm
-   format compliance.
-5. **Do NOT** touch `pipeline.yml`, `stages/stages.json`, or `contracts/` —
-   only your stage folder changes.
-
-## Running Tests
-
+### 3. Run Integration Tests
 ```bash
 bash stages/sast/tests/run_test.sh
 ```
 
-## Ownership
+## Interface & Exit Codes
 
-All files inside `stages/sast/` are owned by **P2** (see `CODEOWNERS`).
+Complies with [contracts/stage-interface.md](../../contracts/stage-interface.md):
+
+- `run.sh <target_path> <output_dir>` writes `<output_dir>/sast.sarif`
+- **Exit Code 0:** Scan completed successfully (findings are documented in the SARIF file, not indicated via exit code)
+- **Exit Code 1:** Scanner error, timeout, or crash (fails closed; deletes any incomplete SARIF)
+- **Exit Code 2:** Usage error (invalid argument count or missing target path)
+
+## Custom Rules
+
+In addition to standard Semgrep registry rulesets, this stage includes three purpose-built rules in `stages/sast/rules/`:
+
+### 1. `p2-sql-injection-string-concat` (`rules/sql-injection.yaml`)
+- **Gap It Fills:** Generic community rules often assume specific ORMs (Django, SQLAlchemy). This rule targets direct raw SQL query string formatting (via `%`, `.format()`, f-strings, or `+` concatenation) assigned or passed to SQLite and DB-API `cursor.execute(...)` calls.
+- **Target:** Seeded vulnerability `V2` in `demo-app/vulnerable/app.py`.
+- **False-Positive Risk:** Low. Parameterized queries using tuples (`conn.execute("...", (param,))`) or lists are explicitly matched as clean (`# ok`).
+
+### 2. `p2-weak-password-hash` (`rules/weak-hashing.yaml`)
+- **Gap It Fills:** Standard crypto rules often flag MD5/SHA-1 purely as generic weak hashes. This rule specifically flags `hashlib.md5(...)` and `hashlib.sha1(...)` invocations within user registration and authentication workflows, enforcing secure password hashing alternatives (e.g. `hashlib.scrypt`, `argon2-cffi`, or `bcrypt`).
+- **Target:** Seeded vulnerability `V6` in `demo-app/vulnerable/app.py`.
+- **False-Positive Risk:** Low. Non-security usage of MD5 (such as checksumming) should use explicit SHA-256 or be isolated; authentication logic must never use MD5.
+
+### 3. `p2-flask-debug-enabled` (`rules/flask-debug.yaml`)
+- **Gap It Fills:** Detects `debug=True` in Flask `app.run(...)` calls across all argument positions (`host`, `port`, keyword args). In production, `debug=True` exposes the interactive Werkzeug PIN debugger, leading directly to Remote Code Execution (RCE).
+- **Target:** Seeded vulnerability `V7` in `demo-app/vulnerable/app.py`.
+- **False-Positive Risk:** Low. Production deployments should always control debugging via environment variables (e.g., `os.environ.get('FLASK_DEBUG') == 'true'`) or a WSGI application server (Gunicorn/uWSGI).
+
+## Severity Mapping
+
+Per [contracts/severity-map.md](../../contracts/severity-map.md), Semgrep severity values are mapped to canonical pipeline values:
+
+| Semgrep Severity | SARIF `level` | Normalized Severity | Pipeline Action |
+|:-----------------|:--------------|:--------------------|:----------------|
+| `ERROR`          | `error`       | `High`              | Gate-evaluated threshold |
+| `WARNING`        | `warning`     | `Medium`            | Gate-evaluated threshold |
+| `INFO`           | `note`        | `Low`               | Informational |
+| *(fallback)*     | `note`        | `Low`               | Fallback default |
+
+The original Semgrep severity is preserved in `properties.raw_severity`.
+
+## Environment Variables
+
+| Variable | Default | Purpose |
+|:---------|:--------|:--------|
+| `STAGE_TIMEOUT` | `600` | Scanner timeout in seconds before failing closed (exit 1). |
+| `SAST_ALLOW_OFFLINE` | `0` | Fail closed (`0`) if registry packs cannot be fetched, or allow offline fallback (`1`) using local custom rules. |
+| `SAST_CUSTOM_RULES` | `1` | Enable local custom rules in `stages/sast/rules/` (`1` enabled, `0` disabled). |
+| `SAST_REGISTRY_PACKS` | `"p/python p/flask p/owasp-top-ten"` | Space-separated list of Semgrep registry packs to scan with. Set to `""` to scan offline with custom rules only. |
+
+## Cache Paths
+
+- **Semgrep Binary & Virtualenv:** `${XDG_CACHE_HOME:-$HOME/.cache}/devsecops/semgrep-1.100.0/venv`
+- Intermediate JSON and log files are created inside isolated temporary directories (`mktemp -d`) and cleaned up on exit.
+
+## Known Limitations
+
+1. **Registry Network Dependency:** Downloading registry packs (`p/python`, `p/flask`, `p/owasp-top-ten`) requires outbound HTTPS access. In airgapped or offline environments, set `SAST_ALLOW_OFFLINE=1` or `SAST_REGISTRY_PACKS=""` to rely exclusively on local custom rules.
+2. **Dynamic / Metaprogrammed Execution:** Pure static pattern matching cannot track dynamic runtime `eval()` or un-annotated string interpolations executed outside lexical scope.

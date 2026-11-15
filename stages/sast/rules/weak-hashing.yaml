@@ -1,0 +1,15 @@
+rules:
+  - id: p2-weak-password-hash
+    message: "Weak hashing algorithm (MD5 or SHA-1) used for password storage. These are cryptographically broken."
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-916"
+      owasp: "A02:2021"
+      confidence: high
+      remediation: "Use hashlib.scrypt, argon2-cffi, or bcrypt for password hashing instead of MD5/SHA-1."
+    pattern-either:
+      - pattern: hashlib.md5($X).hexdigest()
+      - pattern: hashlib.md5($X).digest()
+      - pattern: hashlib.sha1($X).hexdigest()
+      - pattern: hashlib.sha1($X).digest()

@@ -1,0 +1,14 @@
+rules:
+  - id: p2-flask-debug-enabled
+    message: "Flask debug=True enables the interactive Werkzeug debugger, which can allow arbitrary code execution in production."
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-94"
+      owasp: "A05:2021"
+      confidence: high
+      remediation: "Set debug mode from environment variable: app.run(debug=os.environ.get('FLASK_DEBUG', 'false').lower() == 'true')"
+    pattern-either:
+      - pattern: $APP.run(debug=True, ...)
+      - pattern: $APP.run(..., debug=True)
+      - pattern: $APP.run(debug=True)
