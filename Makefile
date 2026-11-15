@@ -17,6 +17,7 @@ setup:
 	$(PYTHON) -m venv $(VENV)
 	$(PIP) install --upgrade pip
 	$(PIP) install -r contracts/requirements.txt
+	$(PIP) install -r demo-app/fixed/requirements.txt
 	@echo "Setup complete."
 
 validate:
