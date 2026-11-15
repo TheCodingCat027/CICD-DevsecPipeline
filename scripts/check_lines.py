@@ -9,3 +9,4 @@ for item in v['vulnerabilities']:
     l_idx = item['line'] - 1
     actual = lines[l_idx].strip() if l_idx < len(lines) else 'EOF'
     print(f"{item['id']} at {item['file']}:{item['line']} -> {actual}")
+

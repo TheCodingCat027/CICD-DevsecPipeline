@@ -2,33 +2,33 @@
 # Replace @p1-handle, @p2-handle, @p3-handle, @p4-handle with real GitHub usernames
 
 # Contracts require ALL FOUR approvals (see docs/branch-protection.md)
-/contracts/                    @p1-handle @p2-handle @p3-handle @p4-handle
-/security-policy.yaml          @p4-handle
-/gate/                         @p4-handle
-/eval/p4-policy/               @p4-handle
-/docs/p4-*                     @p4-handle
+/contracts/                    @samiksha-mittewad @suyog2694 @TheCodingCat027 @mastudcodes
+/security-policy.yaml          @mastudcodes
+/gate/                         @mastudcodes
+/eval/p4-policy/               @mastudcodes
+/docs/p4-*                     @mastudcodes
 
 # P2 owns secrets, SAST, SCA stages
-/stages/secrets/               @p2-handle
-/stages/sast/                  @p2-handle
-/stages/sca/                   @p2-handle
-/eval/p2-code/                 @p2-handle
-/docs/p2-*                     @p2-handle
+/stages/secrets/               @suyog2694
+/stages/sast/                  @suyog2694
+/stages/sca/                   @suyog2694
+/eval/p2-code/                 @suyog2694
+/docs/p2-*                     @suyog2694
 
 # P3 owns IaC, container, SBOM, DAST stages + fixed Dockerfile
-/stages/iac/                   @p3-handle
-/stages/container/             @p3-handle
-/stages/sbom/                  @p3-handle
-/stages/dast/                  @p3-handle
-/eval/p3-container/            @p3-handle
-/docs/p3-*                     @p3-handle
-/demo-app/fixed/Dockerfile     @p3-handle
+/stages/iac/                   @TheCodingCat027
+/stages/container/             @TheCodingCat027
+/stages/sbom/                  @TheCodingCat027
+/stages/dast/                  @TheCodingCat027
+/eval/p3-container/            @TheCodingCat027
+/docs/p3-*                     @TheCodingCat027
+/demo-app/fixed/Dockerfile     @TheCodingCat027
 
 # P1 owns everything else
-/demo-app/                     @p1-handle
-/.github/                      @p1-handle
-/scripts/                      @p1-handle
-/Makefile                      @p1-handle
-/eval/p1-performance/          @p1-handle
-/docs/p1-*                     @p1-handle
-/README.md                     @p1-handle
+/demo-app/                     @samiksha-mittewad
+/.github/                      @samiksha-mittewad
+/scripts/                      @samiksha-mittewad
+/Makefile                      @samiksha-mittewad
+/eval/p1-performance/          @samiksha-mittewad
+/docs/p1-*                     @samiksha-mittewad
+/README.md                     @samiksha-mittewad

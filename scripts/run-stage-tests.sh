@@ -9,3 +9,4 @@ for s in secrets sast sca iac container sbom; do
     bash "${REPO_ROOT}/stages/$s/tests/run_test.sh"
 done
 echo "================ All stage tests passed! ================"
+
