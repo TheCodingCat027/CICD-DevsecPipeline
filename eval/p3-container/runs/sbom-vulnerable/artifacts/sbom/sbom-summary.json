@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-11-17T19:19:39.043478+00:00",
+  "tool": "syft",
+  "tool_version": "1.18.1",
+  "bom_format": "CycloneDX",
+  "spec_version": "1.6",
+  "component_count": 7,
+  "packages": [
+    "click",
+    "flask",
+    "itsdangerous",
+    "jinja2",
+    "markupsafe",
+    "pyyaml",
+    "werkzeug"
+  ]
+}

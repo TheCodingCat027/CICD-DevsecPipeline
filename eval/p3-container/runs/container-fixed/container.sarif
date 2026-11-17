@@ -1,0 +1,285 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "trivy",
+          "version": "0.76.2",
+          "informationUri": "https://github.com/aquasecurity/trivy",
+          "rules": [
+            {
+              "id": "CVE-2025-47278",
+              "name": "flask: Flask Session Signing Fallback Key Vulnerability",
+              "shortDescription": {
+                "text": "Flask is a web server gateway interface (WSGI) web application framework. In Flask 3.1.0, the way fallback key configuration was handled resulted in the last fallback key being used for signing, rather than the current signing key. Signing is provided by the `itsdangerous` library. A list of keys ca"
+              }
+            },
+            {
+              "id": "CVE-2026-27205",
+              "name": "flask: Flask: Information disclosure via improper caching of session data",
+              "shortDescription": {
+                "text": "Flask is a web server gateway interface (WSGI) web application framework. In versions 3.1.2 and below, when the session object is accessed, Flask should set the Vary: Cookie header., resulting in a Use of Cache Containing Sensitive Information vulnerability. The logic instructs caches not to cache t"
+              }
+            },
+            {
+              "id": "CVE-2025-27516",
+              "name": "jinja2: Jinja sandbox breakout through attr filter selecting format method",
+              "shortDescription": {
+                "text": "Jinja is an extensible templating engine. Prior to 3.1.6, an oversight in how the Jinja sandboxed environment interacts with the |attr filter allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the co"
+              }
+            },
+            {
+              "id": "CVE-2025-66221",
+              "name": "Werkzeug: Werkzeug: Denial of service via Windows device names in path segments",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Prior to version 3.1.4, Werkzeug's safe_join function allows path segments with Windows device names. On Windows, there are special device names such as CON, AUX, etc that are implicitly present and readable in every directory. send_from_dire"
+              }
+            },
+            {
+              "id": "CVE-2026-102598",
+              "name": "werkzeug: werkzeug: Denial of Service via safe_join() Windows special device paths",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Prior to 3.1.9, the safe_join function used by send_from_directory can allow a NUL: special-device path because safe_join checks the Windows device name without first removing an empty NTFS ADS marker. The trigger is that an application runs "
+              }
+            },
+            {
+              "id": "CVE-2026-21860",
+              "name": " Werkzeug safe_join() allows Windows special device names with compound extensions",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Prior to version 3.1.5, Werkzeug's safe_join function allows path segments with Windows device names that have file extensions or trailing spaces. On Windows, there are special device names such as CON, AUX, etc that are implicitly present an"
+              }
+            },
+            {
+              "id": "CVE-2026-27199",
+              "name": " Werkzeug safe_join() allows Windows special device names",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Versions 3.1.5 and below, the safe_join function allows Windows device names as filenames if preceded by other path segments. This was previously reported as GHSA-hgf8-39gv-g3f2, but the added filtering failed to account for the fact that saf"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CVE-2025-27516",
+          "level": "warning",
+          "message": {
+            "text": "jinja2: Jinja sandbox breakout through attr filter selecting format method: Jinja2 3.1.5 in container image is affected. Jinja is an extensible templating engine. Prior to 3.1.6, an oversight in how the Jinja sandboxed environment interacts with the |attr filter allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the co"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/fixed/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2025-27516",
+            "package": "Jinja2",
+            "installed_version": "3.1.5",
+            "fixed_version": "3.1.6",
+            "fix_available": true,
+            "fix": "Update base image to get patched Jinja2 version 3.1.6",
+            "cwe": "CWE-1336"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-47278",
+          "level": "note",
+          "message": {
+            "text": "flask: Flask Session Signing Fallback Key Vulnerability: Flask 3.1.0 in container image is affected. Flask is a web server gateway interface (WSGI) web application framework. In Flask 3.1.0, the way fallback key configuration was handled resulted in the last fallback key being used for signing, rather than the current signing key. Signing is provided by the `itsdangerous` library. A list of keys ca"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/fixed/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Low",
+            "category": "container",
+            "raw_severity": "LOW",
+            "cve_id": "CVE-2025-47278",
+            "package": "Flask",
+            "installed_version": "3.1.0",
+            "fixed_version": "3.1.1",
+            "fix_available": true,
+            "fix": "Update base image to get patched Flask version 3.1.1",
+            "cwe": "CWE-683"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-66221",
+          "level": "warning",
+          "message": {
+            "text": "Werkzeug: Werkzeug: Denial of service via Windows device names in path segments: Werkzeug 3.1.3 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Prior to version 3.1.4, Werkzeug's safe_join function allows path segments with Windows device names. On Windows, there are special device names such as CON, AUX, etc that are implicitly present and readable in every directory. send_from_dire"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/fixed/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2025-66221",
+            "package": "Werkzeug",
+            "installed_version": "3.1.3",
+            "fixed_version": "3.1.4",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.1.4",
+            "cwe": "CWE-67"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-102598",
+          "level": "warning",
+          "message": {
+            "text": "werkzeug: werkzeug: Denial of Service via safe_join() Windows special device paths: Werkzeug 3.1.3 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Prior to 3.1.9, the safe_join function used by send_from_directory can allow a NUL: special-device path because safe_join checks the Windows device name without first removing an empty NTFS ADS marker. The trigger is that an application runs"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/fixed/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2026-102598",
+            "package": "Werkzeug",
+            "installed_version": "3.1.3",
+            "fixed_version": "3.1.9",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.1.9",
+            "cwe": "CWE-67"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-21860",
+          "level": "warning",
+          "message": {
+            "text": "Werkzeug safe_join() allows Windows special device names with compound extensions: Werkzeug 3.1.3 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Prior to version 3.1.5, Werkzeug's safe_join function allows path segments with Windows device names that have file extensions or trailing spaces. On Windows, there are special device names such as CON, AUX, etc that are implicitly present an"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/fixed/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2026-21860",
+            "package": "Werkzeug",
+            "installed_version": "3.1.3",
+            "fixed_version": "3.1.5",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.1.5",
+            "cwe": "CWE-67"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-27199",
+          "level": "warning",
+          "message": {
+            "text": "Werkzeug safe_join() allows Windows special device names: Werkzeug 3.1.3 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Versions 3.1.5 and below, the safe_join function allows Windows device names as filenames if preceded by other path segments. This was previously reported as GHSA-hgf8-39gv-g3f2, but the added filtering failed to account for the fact that saf"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/fixed/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2026-27199",
+            "package": "Werkzeug",
+            "installed_version": "3.1.3",
+            "fixed_version": "3.1.6",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.1.6",
+            "cwe": "CWE-67"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-27205",
+          "level": "note",
+          "message": {
+            "text": "flask: Flask: Information disclosure via improper caching of session data: Flask 3.1.0 in container image is affected. Flask is a web server gateway interface (WSGI) web application framework. In versions 3.1.2 and below, when the session object is accessed, Flask should set the Vary: Cookie header., resulting in a Use of Cache Containing Sensitive Information vulnerability. The logic instructs caches not to cache t"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/fixed/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Low",
+            "category": "container",
+            "raw_severity": "LOW",
+            "cve_id": "CVE-2026-27205",
+            "package": "Flask",
+            "installed_version": "3.1.0",
+            "fixed_version": "3.1.3",
+            "fix_available": true,
+            "fix": "Update base image to get patched Flask version 3.1.3",
+            "cwe": "CWE-524"
+          }
+        }
+      ]
+    }
+  ]
+}

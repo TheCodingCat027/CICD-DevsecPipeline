@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-11-17T19:21:42.696110+00:00",
+  "phase": "P3 (Container & IaC)",
+  "detection_rate_pct": 100.0,
+  "seeded_vulnerabilities": {
+    "V4": {
+      "description": "Runs as root (no USER)",
+      "detected_in_vulnerable": true,
+      "detected_in_fixed": false,
+      "correct": true
+    },
+    "V5": {
+      "description": "Unpinned base image",
+      "detected_in_vulnerable": true,
+      "detected_in_fixed": false,
+      "correct": true
+    },
+    "V8": {
+      "description": "No HEALTHCHECK",
+      "detected_in_vulnerable": true,
+      "detected_in_fixed": false,
+      "correct": true
+    }
+  },
+  "iac_stage": {
+    "vulnerable_findings": 2,
+    "fixed_findings": 0,
+    "severity_vulnerable": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 2,
+      "Low": 0
+    },
+    "severity_fixed": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 0,
+      "Low": 0
+    }
+  },
+  "container_stage": {
+    "vulnerable_findings": 22,
+    "fixed_findings": 7,
+    "severity_vulnerable": {
+      "Critical": 3,
+      "High": 6,
+      "Medium": 11,
+      "Low": 2
+    },
+    "severity_fixed": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 5,
+      "Low": 2
+    }
+  },
+  "sbom_stage": {
+    "findings": 0,
+    "cdx_component_count": 7
+  }
+}

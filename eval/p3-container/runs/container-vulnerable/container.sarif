@@ -1,0 +1,842 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "trivy",
+          "version": "0.76.2",
+          "informationUri": "https://github.com/aquasecurity/trivy",
+          "rules": [
+            {
+              "id": "CVE-2023-30861",
+              "name": "flask: Possible disclosure of permanent session cookie due to missing Vary: Cookie header",
+              "shortDescription": {
+                "text": "Flask is a lightweight WSGI web application framework. When all of the following conditions are met, a response containing data intended for one client may be cached and subsequently sent by the proxy to other clients. If the proxy also caches `Set-Cookie` headers, it may send one client's `session`"
+              }
+            },
+            {
+              "id": "CVE-2026-27205",
+              "name": "flask: Flask: Information disclosure via improper caching of session data",
+              "shortDescription": {
+                "text": "Flask is a web server gateway interface (WSGI) web application framework. In versions 3.1.2 and below, when the session object is accessed, Flask should set the Vary: Cookie header., resulting in a Use of Cache Containing Sensitive Information vulnerability. The logic instructs caches not to cache t"
+              }
+            },
+            {
+              "id": "CVE-2019-10906",
+              "name": "python-jinja2: str.format_map allows sandbox escape",
+              "shortDescription": {
+                "text": "In Pallets Jinja before 2.10.1, str.format_map allows a sandbox escape."
+              }
+            },
+            {
+              "id": "CVE-2020-28493",
+              "name": "python-jinja2: ReDoS vulnerability in the urlize filter",
+              "shortDescription": {
+                "text": "This affects the package jinja2 from 0.0.0 and before 2.11.3. The ReDoS vulnerability is mainly due to the `_punctuation_re regex` operator and its use of multiple wildcards. The last wildcard is the most exploitable as it searches for trailing punctuation. This issue can be mitigated by Markdown to"
+              }
+            },
+            {
+              "id": "CVE-2024-22195",
+              "name": "jinja2: HTML attribute injection when passing user input as keys to xmlattr filter",
+              "shortDescription": {
+                "text": "Jinja is an extensible templating engine. Special placeholders in the template allow writing code similar to Python syntax. It is possible to inject arbitrary HTML attributes into the rendered HTML template, potentially leading to Cross-Site Scripting (XSS). The Jinja `xmlattr` filter can be abused "
+              }
+            },
+            {
+              "id": "CVE-2024-34064",
+              "name": "jinja2: accepts keys containing non-attribute characters",
+              "shortDescription": {
+                "text": "Jinja is an extensible templating engine. The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `>`, or `=`, as each would then be interpreted as starting a separate attribute. If an application accepts ke"
+              }
+            },
+            {
+              "id": "CVE-2024-56326",
+              "name": "jinja2: Jinja has a sandbox breakout through indirect reference to format method",
+              "shortDescription": {
+                "text": "Jinja is an extensible templating engine. Prior to 3.1.5, An oversight in how the Jinja sandboxed environment detects calls to str.format allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the conten"
+              }
+            },
+            {
+              "id": "CVE-2025-27516",
+              "name": "jinja2: Jinja sandbox breakout through attr filter selecting format method",
+              "shortDescription": {
+                "text": "Jinja is an extensible templating engine. Prior to 3.1.6, an oversight in how the Jinja sandboxed environment interacts with the |attr filter allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the co"
+              }
+            },
+            {
+              "id": "CVE-2019-20477",
+              "name": "PyYAML: command execution through python/object/apply constructor in FullLoader",
+              "shortDescription": {
+                "text": "PyYAML 5.1 through 5.1.2 has insufficient restrictions on the load and load_all functions because of a class deserialization issue, e.g., Popen is a class in the subprocess module. NOTE: this issue exists because of an incomplete fix for CVE-2017-18342."
+              }
+            },
+            {
+              "id": "CVE-2020-14343",
+              "name": "PyYAML: incomplete fix for CVE-2020-1747",
+              "shortDescription": {
+                "text": "A vulnerability was discovered in the PyYAML library in versions before 5.4, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vuln"
+              }
+            },
+            {
+              "id": "CVE-2020-1747",
+              "name": "PyYAML: arbitrary command execution through python/object/new when FullLoader is used",
+              "shortDescription": {
+                "text": "A vulnerability was discovered in the PyYAML library in versions before 5.3.1, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vu"
+              }
+            },
+            {
+              "id": "CVE-2019-14322",
+              "name": "Pallets Werkzeug vulnerable to Path Traversal",
+              "shortDescription": {
+                "text": "In Pallets Werkzeug before 0.15.5, SharedDataMiddleware mishandles drive names (such as C:) in Windows pathnames."
+              }
+            },
+            {
+              "id": "CVE-2023-25577",
+              "name": "python-werkzeug: high resource usage when parsing multipart form data with many fields",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Prior to version 2.2.3, Werkzeug's multipart form data parser will parse an unlimited number of parts, including file parts. Parts can be a small amount of bytes, but each requires CPU time to parse and may use more memory as Python data. If "
+              }
+            },
+            {
+              "id": "CVE-2024-34069",
+              "name": "python-werkzeug: user may execute code on a developer's machine",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. The debugger in affected versions of Werkzeug can allow an attacker to execute code on a developer's machine under some circumstances. This requires the attacker to get the developer to interact with a domain and subdomain they control, and e"
+              }
+            },
+            {
+              "id": "CVE-2024-49766",
+              "name": "werkzeug: python-werkzeug: Werkzeug safe_join not safe on Windows",
+              "shortDescription": {
+                "text": "Werkzeug is a Web Server Gateway Interface web application library. On Python < 3.11 on Windows, os.path.isabs() does not catch UNC paths like //server/share. Werkzeug's safe_join() relies on this check, and so can produce a path that is not safe, potentially allowing unintended access to data. Appl"
+              }
+            },
+            {
+              "id": "CVE-2025-66221",
+              "name": "Werkzeug: Werkzeug: Denial of service via Windows device names in path segments",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Prior to version 3.1.4, Werkzeug's safe_join function allows path segments with Windows device names. On Windows, there are special device names such as CON, AUX, etc that are implicitly present and readable in every directory. send_from_dire"
+              }
+            },
+            {
+              "id": "CVE-2026-102598",
+              "name": "werkzeug: werkzeug: Denial of Service via safe_join() Windows special device paths",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Prior to 3.1.9, the safe_join function used by send_from_directory can allow a NUL: special-device path because safe_join checks the Windows device name without first removing an empty NTFS ADS marker. The trigger is that an application runs "
+              }
+            },
+            {
+              "id": "CVE-2026-21860",
+              "name": " Werkzeug safe_join() allows Windows special device names with compound extensions",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Prior to version 3.1.5, Werkzeug's safe_join function allows path segments with Windows device names that have file extensions or trailing spaces. On Windows, there are special device names such as CON, AUX, etc that are implicitly present an"
+              }
+            },
+            {
+              "id": "CVE-2026-27199",
+              "name": " Werkzeug safe_join() allows Windows special device names",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Versions 3.1.5 and below, the safe_join function allows Windows device names as filenames if preceded by other path segments. This was previously reported as GHSA-hgf8-39gv-g3f2, but the added filtering failed to account for the fact that saf"
+              }
+            },
+            {
+              "id": "CVE-2023-23934",
+              "name": "python-werkzeug: cookie prefixed with = can shadow unprefixed cookie",
+              "shortDescription": {
+                "text": "Werkzeug is a comprehensive WSGI web application library. Browsers may allow \"nameless\" cookies that look like `=value` instead of `key=value`. A vulnerable browser may allow a compromised application on an adjacent subdomain to exploit this to set a cookie like `=__Host-test=bad` for another subdom"
+              }
+            },
+            {
+              "id": "DSP-IMG-001",
+              "name": "DSP-IMG-001",
+              "shortDescription": {
+                "text": "Container image runs as root: no non-root USER instruction found in Dockerfile"
+              }
+            },
+            {
+              "id": "DSP-IMG-002",
+              "name": "DSP-IMG-002",
+              "shortDescription": {
+                "text": "Base image uses 'latest' or no version tag: image is not pinned to a specific version"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CVE-2019-10906",
+          "level": "error",
+          "message": {
+            "text": "python-jinja2: str.format_map allows sandbox escape: Jinja2 2.10 in container image is affected. In Pallets Jinja before 2.10.1, str.format_map allows a sandbox escape."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "container",
+            "raw_severity": "HIGH",
+            "cve_id": "CVE-2019-10906",
+            "package": "Jinja2",
+            "installed_version": "2.10",
+            "fixed_version": "2.10.1",
+            "fix_available": true,
+            "fix": "Update base image to get patched Jinja2 version 2.10.1"
+          }
+        },
+        {
+          "ruleId": "CVE-2019-14322",
+          "level": "error",
+          "message": {
+            "text": "Pallets Werkzeug vulnerable to Path Traversal: Werkzeug 0.15.4 in container image is affected. In Pallets Werkzeug before 0.15.5, SharedDataMiddleware mishandles drive names (such as C:) in Windows pathnames."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "container",
+            "raw_severity": "HIGH",
+            "cve_id": "CVE-2019-14322",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "0.15.5",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 0.15.5",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "CVE-2019-20477",
+          "level": "error",
+          "message": {
+            "text": "PyYAML: command execution through python/object/apply constructor in FullLoader: PyYAML 5.1 in container image is affected. PyYAML 5.1 through 5.1.2 has insufficient restrictions on the load and load_all functions because of a class deserialization issue, e.g., Popen is a class in the subprocess module. NOTE: this issue exists because of an incomplete fix for CVE-2017-18342."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Critical",
+            "category": "container",
+            "raw_severity": "CRITICAL",
+            "cve_id": "CVE-2019-20477",
+            "package": "PyYAML",
+            "installed_version": "5.1",
+            "fixed_version": "5.2",
+            "fix_available": true,
+            "fix": "Update base image to get patched PyYAML version 5.2",
+            "cwe": "CWE-502"
+          }
+        },
+        {
+          "ruleId": "CVE-2020-14343",
+          "level": "error",
+          "message": {
+            "text": "PyYAML: incomplete fix for CVE-2020-1747: PyYAML 5.1 in container image is affected. A vulnerability was discovered in the PyYAML library in versions before 5.4, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vuln"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Critical",
+            "category": "container",
+            "raw_severity": "CRITICAL",
+            "cve_id": "CVE-2020-14343",
+            "package": "PyYAML",
+            "installed_version": "5.1",
+            "fixed_version": "5.4",
+            "fix_available": true,
+            "fix": "Update base image to get patched PyYAML version 5.4",
+            "cwe": "CWE-20"
+          }
+        },
+        {
+          "ruleId": "CVE-2020-1747",
+          "level": "error",
+          "message": {
+            "text": "PyYAML: arbitrary command execution through python/object/new when FullLoader is used: PyYAML 5.1 in container image is affected. A vulnerability was discovered in the PyYAML library in versions before 5.3.1, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vu"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Critical",
+            "category": "container",
+            "raw_severity": "CRITICAL",
+            "cve_id": "CVE-2020-1747",
+            "package": "PyYAML",
+            "installed_version": "5.1",
+            "fixed_version": "5.3.1",
+            "fix_available": true,
+            "fix": "Update base image to get patched PyYAML version 5.3.1",
+            "cwe": "CWE-20"
+          }
+        },
+        {
+          "ruleId": "CVE-2020-28493",
+          "level": "warning",
+          "message": {
+            "text": "python-jinja2: ReDoS vulnerability in the urlize filter: Jinja2 2.10 in container image is affected. This affects the package jinja2 from 0.0.0 and before 2.11.3. The ReDoS vulnerability is mainly due to the `_punctuation_re regex` operator and its use of multiple wildcards. The last wildcard is the most exploitable as it searches for trailing punctuation. This issue can be mitigated by Markdown to"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2020-28493",
+            "package": "Jinja2",
+            "installed_version": "2.10",
+            "fixed_version": "2.11.3",
+            "fix_available": true,
+            "fix": "Update base image to get patched Jinja2 version 2.11.3",
+            "cwe": "CWE-400"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-23934",
+          "level": "note",
+          "message": {
+            "text": "python-werkzeug: cookie prefixed with = can shadow unprefixed cookie: Werkzeug 0.15.4 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Browsers may allow \"nameless\" cookies that look like `=value` instead of `key=value`. A vulnerable browser may allow a compromised application on an adjacent subdomain to exploit this to set a cookie like `=__Host-test=bad` for another subdom"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Low",
+            "category": "container",
+            "raw_severity": "LOW",
+            "cve_id": "CVE-2023-23934",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "2.2.3",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 2.2.3",
+            "cwe": "CWE-20"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-25577",
+          "level": "error",
+          "message": {
+            "text": "python-werkzeug: high resource usage when parsing multipart form data with many fields: Werkzeug 0.15.4 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Prior to version 2.2.3, Werkzeug's multipart form data parser will parse an unlimited number of parts, including file parts. Parts can be a small amount of bytes, but each requires CPU time to parse and may use more memory as Python data. If"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "container",
+            "raw_severity": "HIGH",
+            "cve_id": "CVE-2023-25577",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "2.2.3",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 2.2.3",
+            "cwe": "CWE-770"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-30861",
+          "level": "error",
+          "message": {
+            "text": "flask: Possible disclosure of permanent session cookie due to missing Vary: Cookie header: Flask 1.0.2 in container image is affected. Flask is a lightweight WSGI web application framework. When all of the following conditions are met, a response containing data intended for one client may be cached and subsequently sent by the proxy to other clients. If the proxy also caches `Set-Cookie` headers, it may send one client's `session`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "container",
+            "raw_severity": "HIGH",
+            "cve_id": "CVE-2023-30861",
+            "package": "Flask",
+            "installed_version": "1.0.2",
+            "fixed_version": "2.3.2, 2.2.5",
+            "fix_available": true,
+            "fix": "Update base image to get patched Flask version 2.3.2, 2.2.5",
+            "cwe": "CWE-539"
+          }
+        },
+        {
+          "ruleId": "CVE-2024-22195",
+          "level": "warning",
+          "message": {
+            "text": "jinja2: HTML attribute injection when passing user input as keys to xmlattr filter: Jinja2 2.10 in container image is affected. Jinja is an extensible templating engine. Special placeholders in the template allow writing code similar to Python syntax. It is possible to inject arbitrary HTML attributes into the rendered HTML template, potentially leading to Cross-Site Scripting (XSS). The Jinja `xmlattr` filter can be abused"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2024-22195",
+            "package": "Jinja2",
+            "installed_version": "2.10",
+            "fixed_version": "3.1.3",
+            "fix_available": true,
+            "fix": "Update base image to get patched Jinja2 version 3.1.3",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "CVE-2024-34064",
+          "level": "warning",
+          "message": {
+            "text": "jinja2: accepts keys containing non-attribute characters: Jinja2 2.10 in container image is affected. Jinja is an extensible templating engine. The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `>`, or `=`, as each would then be interpreted as starting a separate attribute. If an application accepts ke"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2024-34064",
+            "package": "Jinja2",
+            "installed_version": "2.10",
+            "fixed_version": "3.1.4",
+            "fix_available": true,
+            "fix": "Update base image to get patched Jinja2 version 3.1.4",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "CVE-2024-34069",
+          "level": "error",
+          "message": {
+            "text": "python-werkzeug: user may execute code on a developer's machine: Werkzeug 0.15.4 in container image is affected. Werkzeug is a comprehensive WSGI web application library. The debugger in affected versions of Werkzeug can allow an attacker to execute code on a developer's machine under some circumstances. This requires the attacker to get the developer to interact with a domain and subdomain they control, and e"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "container",
+            "raw_severity": "HIGH",
+            "cve_id": "CVE-2024-34069",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "3.0.3",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.0.3",
+            "cwe": "CWE-352"
+          }
+        },
+        {
+          "ruleId": "CVE-2024-49766",
+          "level": "warning",
+          "message": {
+            "text": "werkzeug: python-werkzeug: Werkzeug safe_join not safe on Windows: Werkzeug 0.15.4 in container image is affected. Werkzeug is a Web Server Gateway Interface web application library. On Python < 3.11 on Windows, os.path.isabs() does not catch UNC paths like //server/share. Werkzeug's safe_join() relies on this check, and so can produce a path that is not safe, potentially allowing unintended access to data. Appl"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2024-49766",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "3.0.6",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.0.6",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "CVE-2024-56326",
+          "level": "warning",
+          "message": {
+            "text": "jinja2: Jinja has a sandbox breakout through indirect reference to format method: Jinja2 2.10 in container image is affected. Jinja is an extensible templating engine. Prior to 3.1.5, An oversight in how the Jinja sandboxed environment detects calls to str.format allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the conten"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2024-56326",
+            "package": "Jinja2",
+            "installed_version": "2.10",
+            "fixed_version": "3.1.5",
+            "fix_available": true,
+            "fix": "Update base image to get patched Jinja2 version 3.1.5",
+            "cwe": "CWE-693"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-27516",
+          "level": "warning",
+          "message": {
+            "text": "jinja2: Jinja sandbox breakout through attr filter selecting format method: Jinja2 2.10 in container image is affected. Jinja is an extensible templating engine. Prior to 3.1.6, an oversight in how the Jinja sandboxed environment interacts with the |attr filter allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the co"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2025-27516",
+            "package": "Jinja2",
+            "installed_version": "2.10",
+            "fixed_version": "3.1.6",
+            "fix_available": true,
+            "fix": "Update base image to get patched Jinja2 version 3.1.6",
+            "cwe": "CWE-1336"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-66221",
+          "level": "warning",
+          "message": {
+            "text": "Werkzeug: Werkzeug: Denial of service via Windows device names in path segments: Werkzeug 0.15.4 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Prior to version 3.1.4, Werkzeug's safe_join function allows path segments with Windows device names. On Windows, there are special device names such as CON, AUX, etc that are implicitly present and readable in every directory. send_from_dire"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2025-66221",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "3.1.4",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.1.4",
+            "cwe": "CWE-67"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-102598",
+          "level": "warning",
+          "message": {
+            "text": "werkzeug: werkzeug: Denial of Service via safe_join() Windows special device paths: Werkzeug 0.15.4 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Prior to 3.1.9, the safe_join function used by send_from_directory can allow a NUL: special-device path because safe_join checks the Windows device name without first removing an empty NTFS ADS marker. The trigger is that an application runs"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2026-102598",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "3.1.9",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.1.9",
+            "cwe": "CWE-67"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-21860",
+          "level": "warning",
+          "message": {
+            "text": "Werkzeug safe_join() allows Windows special device names with compound extensions: Werkzeug 0.15.4 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Prior to version 3.1.5, Werkzeug's safe_join function allows path segments with Windows device names that have file extensions or trailing spaces. On Windows, there are special device names such as CON, AUX, etc that are implicitly present an"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2026-21860",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "3.1.5",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.1.5",
+            "cwe": "CWE-67"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-27199",
+          "level": "warning",
+          "message": {
+            "text": "Werkzeug safe_join() allows Windows special device names: Werkzeug 0.15.4 in container image is affected. Werkzeug is a comprehensive WSGI web application library. Versions 3.1.5 and below, the safe_join function allows Windows device names as filenames if preceded by other path segments. This was previously reported as GHSA-hgf8-39gv-g3f2, but the added filtering failed to account for the fact that saf"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "cve_id": "CVE-2026-27199",
+            "package": "Werkzeug",
+            "installed_version": "0.15.4",
+            "fixed_version": "3.1.6",
+            "fix_available": true,
+            "fix": "Update base image to get patched Werkzeug version 3.1.6",
+            "cwe": "CWE-67"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-27205",
+          "level": "note",
+          "message": {
+            "text": "flask: Flask: Information disclosure via improper caching of session data: Flask 1.0.2 in container image is affected. Flask is a web server gateway interface (WSGI) web application framework. In versions 3.1.2 and below, when the session object is accessed, Flask should set the Vary: Cookie header., resulting in a Use of Cache Containing Sensitive Information vulnerability. The logic instructs caches not to cache t"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Low",
+            "category": "container",
+            "raw_severity": "LOW",
+            "cve_id": "CVE-2026-27205",
+            "package": "Flask",
+            "installed_version": "1.0.2",
+            "fixed_version": "3.1.3",
+            "fix_available": true,
+            "fix": "Update base image to get patched Flask version 3.1.3",
+            "cwe": "CWE-524"
+          }
+        },
+        {
+          "ruleId": "DSP-IMG-001",
+          "level": "error",
+          "message": {
+            "text": "Container image runs as root: no non-root USER instruction found in Dockerfile"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 7
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "container",
+            "raw_severity": "HIGH",
+            "fix": "Add 'RUN useradd -m appuser && USER appuser' before the CMD instruction"
+          }
+        },
+        {
+          "ruleId": "DSP-IMG-002",
+          "level": "warning",
+          "message": {
+            "text": "Base image uses 'latest' or no version tag: image is not pinned to a specific version"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo-app/vulnerable/Dockerfile"
+                },
+                "region": {
+                  "startLine": 7
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "container",
+            "raw_severity": "MEDIUM",
+            "fix": "Pin the base image to an exact version e.g. 'python:3.11.11-slim-bookworm'"
+          }
+        }
+      ]
+    }
+  ]
+}
