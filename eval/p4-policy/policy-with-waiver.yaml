@@ -1,0 +1,18 @@
+container:
+  banned_base_tags:
+  - latest
+  must_run_as_non_root: true
+mode: enforce
+secrets:
+  max_allowed: 0
+version: 1
+vulnerabilities:
+  critical: 0
+  high: 3
+  low: null
+  medium: null
+waivers:
+- approved_by: p4-test
+  expires: '2027-12-31'
+  id: aws-access-token
+  reason: Test waiver by rule_id

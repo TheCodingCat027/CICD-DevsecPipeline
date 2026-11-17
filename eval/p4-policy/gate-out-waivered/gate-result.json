@@ -1,0 +1,44 @@
+{
+  "decision": "fail",
+  "mode": "enforce",
+  "counts": {
+    "Critical": 3,
+    "High": 10,
+    "Medium": 14,
+    "Low": 2
+  },
+  "violations": [
+    {
+      "category": "vulnerabilities",
+      "severity": "Critical",
+      "threshold": 0,
+      "actual": 3,
+      "message": "Vulnerability threshold exceeded: 3 Critical finding(s), max=0"
+    },
+    {
+      "category": "vulnerabilities",
+      "severity": "High",
+      "threshold": 3,
+      "actual": 10,
+      "message": "Vulnerability threshold exceeded: 10 High finding(s), max=3"
+    },
+    {
+      "category": "container",
+      "severity": "High",
+      "threshold": 0,
+      "actual": 1,
+      "message": "Container must_run_as_non_root violated: 1 finding(s) indicate root execution (DSP-IMG-001)"
+    },
+    {
+      "category": "container",
+      "severity": "Medium",
+      "threshold": 0,
+      "actual": 1,
+      "message": "Container banned_base_tags violated: 1 finding(s) reference a banned tag (banned: ['latest'])"
+    }
+  ],
+  "waivers_applied": [
+    "aws-access-token"
+  ],
+  "generated_at": "2026-11-17T19:31:41Z"
+}

@@ -1,0 +1,97 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "semgrep",
+          "version": "1.99.0",
+          "informationUri": "https://semgrep.dev",
+          "rules": [
+            {
+              "id": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+              "name": "Formatted SQL Query",
+              "shortDescription": {"text": "String concatenation in SQL query - SQL injection risk"}
+            },
+            {
+              "id": "python.lang.security.audit.md5-used-as-password.md5-used-as-password",
+              "name": "MD5 Used as Password Hash",
+              "shortDescription": {"text": "MD5 is not suitable for password hashing"}
+            },
+            {
+              "id": "python.flask.security.audit.debug-enabled.debug-enabled",
+              "name": "Flask Debug Mode Enabled",
+              "shortDescription": {"text": "Flask debug mode exposes sensitive information"}
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+          "level": "error",
+          "message": {"text": "String concatenation used to build SQL query. This is vulnerable to SQL injection."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/app.py"},
+                "region": {"startLine": 44}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "sast",
+            "cwe": "CWE-89",
+            "confidence": "high",
+            "raw_severity": "ERROR",
+            "fix": "Use parameterized queries: conn.execute('SELECT ... WHERE username = ?', (name,))"
+          }
+        },
+        {
+          "ruleId": "python.lang.security.audit.md5-used-as-password.md5-used-as-password",
+          "level": "warning",
+          "message": {"text": "MD5 is a weak cryptographic hash function and should not be used for password hashing."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/app.py"},
+                "region": {"startLine": 54}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "sast",
+            "cwe": "CWE-916",
+            "confidence": "high",
+            "raw_severity": "WARNING",
+            "fix": "Use hashlib.scrypt or bcrypt for password hashing"
+          }
+        },
+        {
+          "ruleId": "python.flask.security.audit.debug-enabled.debug-enabled",
+          "level": "warning",
+          "message": {"text": "Flask debug mode is enabled. This exposes the interactive debugger and must never run in production."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/app.py"},
+                "region": {"startLine": 103}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "Medium",
+            "category": "sast",
+            "confidence": "high",
+            "raw_severity": "WARNING",
+            "fix": "Set debug=False or read from environment: debug=os.environ.get('DEBUG','false')=='true'"
+          }
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,13 @@
+{
+  "decision": "pass",
+  "mode": "enforce",
+  "counts": {
+    "Critical": 0,
+    "High": 0,
+    "Medium": 2,
+    "Low": 0
+  },
+  "violations": [],
+  "waivers_applied": [],
+  "generated_at": "2026-11-17T19:30:09Z"
+}

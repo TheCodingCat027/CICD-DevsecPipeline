@@ -1,0 +1,80 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "trivy",
+          "version": "0.57.1",
+          "informationUri": "https://github.com/aquasecurity/trivy",
+          "rules": [
+            {
+              "id": "CVE-2019-10906",
+              "name": "Jinja2 Server Side Template Injection",
+              "shortDescription": {"text": "Jinja2 before 2.10.1 allows SSTI via str.format_map"},
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2019-10906"
+            },
+            {
+              "id": "CVE-2019-20477",
+              "name": "PyYAML arbitrary code execution",
+              "shortDescription": {"text": "PyYAML 5.1 yaml.load allows arbitrary code execution"},
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2019-20477"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CVE-2019-10906",
+          "level": "error",
+          "message": {"text": "Package jinja2 version 2.10 is affected by CVE-2019-10906 (Server Side Template Injection via str.format_map). Upgrade to >= 2.10.1."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/requirements.txt"},
+                "region": {"startLine": 8}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "sca",
+            "cve_id": "CVE-2019-10906",
+            "package": "jinja2",
+            "installed_version": "2.10",
+            "fixed_version": "2.10.1",
+            "fix_available": true,
+            "raw_severity": "HIGH",
+            "fix": "Upgrade Jinja2 to version 2.10.1 or later"
+          }
+        },
+        {
+          "ruleId": "CVE-2019-20477",
+          "level": "error",
+          "message": {"text": "Package PyYAML version 5.1 is affected by CVE-2019-20477 (arbitrary code execution via yaml.load). Upgrade to >= 5.2."},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "demo-app/vulnerable/requirements.txt"},
+                "region": {"startLine": 9}
+              }
+            }
+          ],
+          "properties": {
+            "severity": "High",
+            "category": "sca",
+            "cve_id": "CVE-2019-20477",
+            "package": "PyYAML",
+            "installed_version": "5.1",
+            "fixed_version": "5.2",
+            "fix_available": true,
+            "raw_severity": "HIGH",
+            "fix": "Upgrade PyYAML to version 5.2 or later"
+          }
+        }
+      ]
+    }
+  ]
+}
+

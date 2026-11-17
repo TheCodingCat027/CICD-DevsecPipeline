@@ -1,0 +1,30 @@
+[
+  {
+    "id": "4107cec73178c9b0f9ddfbc18effeb935894d87f46054bf8479a3b35a4db6c5a",
+    "tool": "hadolint+checkov",
+    "stage": "iac",
+    "category": "iac",
+    "rule_id": "CKV_DOCKER_2",
+    "severity": "Medium",
+    "file": "demo-app/vulnerable/Dockerfile",
+    "line": 1,
+    "description": "[Checkov CKV_DOCKER_2] CKV_DOCKER_2",
+    "fix": "Ensure that HEALTHCHECK instructions have been added to the container image",
+    "raw_severity": "MEDIUM",
+    "waived": false
+  },
+  {
+    "id": "6630b542ef3c0eb10c4a6bec8645591fc0778e438927b933e4a524583be23b56",
+    "tool": "hadolint+checkov",
+    "stage": "iac",
+    "category": "iac",
+    "rule_id": "CKV_DOCKER_3",
+    "severity": "Medium",
+    "file": "demo-app/vulnerable/Dockerfile",
+    "line": 1,
+    "description": "[Checkov CKV_DOCKER_3] CKV_DOCKER_3",
+    "fix": "Ensure that a user for the container has been created",
+    "raw_severity": "MEDIUM",
+    "waived": false
+  }
+]
