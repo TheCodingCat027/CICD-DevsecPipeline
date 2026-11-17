@@ -1,55 +1,46 @@
-# Stage: `iac`
+# IAC Stage — Hadolint + Checkov
 
-**Owner:** P3  
-**Phase:** Phase 3 (stub in Phase 1; real implementation in Phase 3)
+**Owner:** P3 | **Phase:** 3
 
-## Purpose
+Scans Dockerfile(s) for infrastructure-as-code misconfigurations using two complementary tools:
 
-Infrastructure as Code security scanning (Dockerfile, Terraform, etc.)
-
-## Real Tool
-
-| Property | Value |
-|----------|-------|
-| Tool | Hadolint + Checkov |
-| Pinned version (placeholder) | `2.12.0 / 3.2.0` — P3 must confirm and pin in their implementation |
-| Install | See official Hadolint + Checkov installation docs |
+- **Hadolint** (v2.12.0): Dockerfile linter (DL3002, DL3007, etc.)
+- **Checkov** (v3.2.405): IaC policy scanner (CKV_DOCKER_*)
 
 ## Interface
 
-This stage implements the **universal stage interface**. See [contracts/stage-interface.md](../../contracts/stage-interface.md).
-
-**Invocation:**
 ```bash
-bash stages/iac/run.sh <target_path> <output_dir>
+stages/iac/run.sh <target_path> <output_dir>
 ```
 
-**Output:**
-- `<output_dir>/iac.sarif` — always written, even with zero findings
-- Exit 0 on success, exit 1 on scanner crash, exit 2 on argument error
+Outputs `<output_dir>/iac.sarif` — a SARIF 2.1.0 file passing `contracts/validate.py --stage iac`.
 
-## Current Stub Status
+## Seeded Vulnerabilities Detected
 
-> ⚠️ This is a **Phase 1 stub**. It copies `contracts/samples/iac.sarif` to the output
-> directory and prints a reminder to stderr. No real scanning is performed.
+| ID | Rule | Description |
+|----|------|-------------|
+| V4 | DL3002 / CKV_DOCKER_8 | Runs as root (no USER instruction) |
+| V5 | DL3007 | Unpinned base image tag |
+| V8 | CKV_DOCKER_28 | No HEALTHCHECK instruction |
 
-## How to Replace This Stub (Phase 3)
+## Tool Versions
 
-1. Install `Hadolint + Checkov` at a pinned version and update this README with the exact version.
-2. Edit **only** `stages/iac/run.sh` — replace the stub copy with real scanner invocation
-   that writes `<output_dir>/iac.sarif`.
-3. Run `stages/iac/tests/run_test.sh` to verify the output is valid SARIF.
-4. Run `python contracts/validate.py <output_dir>/iac.sarif --stage iac` to confirm
-   format compliance.
-5. **Do NOT** touch `pipeline.yml`, `stages/stages.json`, or `contracts/` —
-   only your stage folder changes.
+| Tool | Version | Cache Location |
+|------|---------|----------------|
+| Hadolint | 2.12.0 | `~/.cache/devsecops/hadolint-2.12.0/hadolint` |
+| Checkov | 3.2.405 | `~/.cache/devsecops/checkov-3.2.405/venv/bin/checkov` |
 
-## Running Tests
+## Exit Codes
 
-```bash
-bash stages/iac/tests/run_test.sh
-```
+| Code | Meaning |
+|------|---------|
+| 0 | Success (findings do NOT cause non-zero exit) |
+| 1 | Scanner crash / install failure |
+| 2 | Usage error (wrong arguments, missing target) |
 
-## Ownership
+## Design Notes
 
-All files inside `stages/iac/` are owned by **P3** (see `CODEOWNERS`).
+- Both tools run on every Dockerfile found in `<target_path>` (up to 3 dirs deep).
+- Results are merged into a single SARIF run with `tool.driver.name = "hadolint+checkov"`.
+- See `docs/p3-contract-feedback.md` for the rationale on the combined driver name.
+- Fail-closed: on any scanner error, the partial SARIF is deleted before exit 1.
